@@ -23,9 +23,11 @@ sqlite> exit
 
 === Execute filtering script
 
+==== Extracting ALL DATA
+
 [source,bash]
 ----
-sqlite3 geonames.db < sequence_by_system.sql > translit_pairs.csv
+sqlite3 geonames.db < sequence_system_all.sql > translit_pairs.csv
 ----
 
 Your output file will be stored in `translit_pairs.csv` and look like this:
@@ -44,6 +46,20 @@ zho_Hani2Latn_GCH_1979,-5108110,N,Zhongwei,Zhongwei,14692533,NS,"中圩","中圩
 zho_Hani2Latn_GCH_1979,-5068284,N,Xiafuxing,Xiafuxing,11136780,NS,"下复兴","下复兴",zho
 zho_Hani2Latn_GCH_1979,-5068278,N,Henggeng,Henggeng,11138674,NS,"横埂","横埂",zho
 ...
+----
+
+
+==== Extracting for one transliteration system
+
+[source,sh]
+----
+mkdir -p sql
+mkdir -p pairs
+for system in `cat translit_systems.txt`; do
+  TRANSLIT_SYSTEM=$system
+  envsubst < sequence_system_each.sql.in > sql/$TRANSLIT_SYSTEM.sql
+  sqlite3 geonames.db < sql/$TRANSLIT_SYSTEM.sql > pairs/$TRANSLIT_SYSTEM.csv
+done
 ----
 
 == Credits
