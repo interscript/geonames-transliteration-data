@@ -6,9 +6,26 @@ Extract transliteration pairs (entries that are coded with transliteration syste
 
 == Usage
 
+=== Basic
+
+[source,bash]
+----
+make all
+----
+
+Achieves all the steps below.
+
+
 === Create the GeoNames database for filtering
 
 Create a SQLite3 database using the "`all countries`" GeoNames data set.
+
+[source,bash]
+----
+make geonames.db
+----
+
+Internally it will run this:
 
 [source,bash]
 ----
@@ -21,46 +38,44 @@ sqlite> .backup geonames.db
 sqlite> exit
 ----
 
-=== Execute filtering script
-
-==== Extracting ALL DATA
+=== Extract all transliteration pairs first
 
 [source,bash]
 ----
-sqlite3 geonames.db < sequence_system_all.sql > translit_pairs.csv
+make geonames_pairs.db
 ----
 
-Your output file will be stored in `translit_pairs.csv` and look like this:
+You will get `geonames_pairs.csv` which contains all transliteration pairs.
 
 [source,csv]
 ----
-TRANSL_CD,UNI,NT,FULL_NAME_RO,FULL_NAME_RG,UNI,NT,FULL_NAME_RO,FULL_NAME_RG,LC
-zho_Hani2Latn_WDG_1979,475320,D,"Qiantangjiang Zhan","Qiantangjiang Zhan",12277331,DS,"钱塘江站","钱塘江站",zho
-zho_Hani2Latn_WDG_1979,14673196,V,"Tung-men Chiao","Tung-men Chiao",14633249,VS,"东门礁","东门礁",zho
-zho_Hani2Latn_WDG_1979,14673197,V,"Hsi-men Chiao","Hsi-men Chiao",14633249,VS,"东门礁","东门礁",zho
-zho_Hani2Latn_WDG_1979,11929480,V,"Nan-kan Hsiang","Nan-kan Hsiang",17894024,VS,"南竿乡","南竿乡",""
-zho_Hani2Latn_WDG_1979,-3636699,V,"Ma-tsu Lieh-tao","Ma-tsu Lieh-tao",17892706,VS,"马祖列岛","马祖列岛",""
-zho_Hani2Latn_WDG_1979,12210084,NS,"蓮花園","蓮花園",12210085,N,Lianhuayuan,Lianhuayuan,zho
-zho_Hani2Latn_GCH_1979,-5108094,N,Liujianian,Liujianian,14705841,NS,"刘家埝","刘家埝",zho
-zho_Hani2Latn_GCH_1979,-5108110,N,Zhongwei,Zhongwei,14692533,NS,"中圩","中圩",zho
-zho_Hani2Latn_GCH_1979,-5068284,N,Xiafuxing,Xiafuxing,11136780,NS,"下复兴","下复兴",zho
-zho_Hani2Latn_GCH_1979,-5068278,N,Henggeng,Henggeng,11138674,NS,"横埂","横埂",zho
+TRANSL_CD|SRC_UNI|SRC_NT|SRC_FULL_NAME_RO|SRC_FULL_NAME_RG|DEST_UNI|DEST_NT|DEST_FULL_NAME_RO|DEST_FULL_NAME_RG|LC
+zho_Hani2Latn_WDG_1979|475320|D|Qiantangjiang Zhan|Qiantangjiang Zhan|12277331|DS|钱塘江站|钱塘江站|zho
+zho_Hani2Latn_WDG_1979|14673196|V|Tung-men Chiao|Tung-men Chiao|14633249|VS|东门礁|东门礁|zho
+zho_Hani2Latn_WDG_1979|14673197|V|Hsi-men Chiao|Hsi-men Chiao|14633249|VS|东门礁|东门礁|zho
 ...
 ----
 
 
-==== Extracting for one transliteration system
+=== Extracting for every transliteration system
 
-[source,sh]
+[source,bash]
 ----
-mkdir -p sql
-mkdir -p pairs
-for system in `cat translit_systems.txt`; do
-  TRANSLIT_SYSTEM=$system
-  envsubst < sequence_system_each.sql.in > sql/$TRANSLIT_SYSTEM.sql
-  sqlite3 geonames.db < sql/$TRANSLIT_SYSTEM.sql > pairs/$TRANSLIT_SYSTEM.csv
-done
+make all
 ----
+
+Your output files will be stored in `pairs/${translit_system}.csv` and look like this:
+
+[source,csv]
+----
+TRANSL_CD,SRC_UNI,SRC_NT,SRC_FULL_NAME_RO,SRC_FULL_NAME_RG,DEST_UNI,DEST_NT,DEST_FULL_NAME_RO,DEST_FULL_NAME_RG,LC
+ara_Arab2Latn_BUC_2002,17550392,N,"Wādī al Khuḑrah","Wādī al Khuḑrah",17550393,NS,"وادي الخضرة","وادي الخضرة",ara
+ara_Arab2Latn_BUC_2002,-3489887,D,"Wādī ad Dafīn","Wādī ad Dafīn",14461283,DS,"وادي الدفين","وادي الدفين",ara
+ara_Arab2Latn_BUC_2002,18101655,N,"Shi‘b Ḩāzirin","Ḩāzirin, Shi‘b",18101656,NS,"شعب حازرن","شعب حازرن",ara
+ara_Arab2Latn_BUC_2002,14363956,N,"Būghāz Raqm Ithnān","Raqm Ithnān, Būghāz",14305791,NS,"بوغاز رقم ٢","بوغاز رقم ٢",ara
+...
+----
+
 
 == Credits
 
