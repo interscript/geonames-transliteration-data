@@ -1,0 +1,51 @@
+= GeoNames data for transliteration testing
+
+== Purpose
+
+Extract transliteration pairs (entries that are coded with transliteration systems) for testing of those transliteration sstems.
+
+== Usage
+
+=== Create the GeoNames database for filtering
+
+Create a SQLite3 database using the "`all countries`" GeoNames data set.
+
+[source,bash]
+----
+$ curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_20200106.zip -o geonames_20200106.zip
+$ unzip geonames_20200106.zip
+$ sqlite
+sqlite> .mode tabs
+sqlite> .import geonames_20200106/Countries.txt countries
+sqlite> .backup geonames.db
+sqlite> exit
+----
+
+=== Execute filtering script
+
+[source,bash]
+----
+sqlite3 geonames.db < sequence_by_system.sql > translit_pairs.csv
+----
+
+Your output file will be stored in `translit_pairs.csv` and look like this:
+
+[source,csv]
+----
+TRANSL_CD,UNI,NT,FULL_NAME_RO,FULL_NAME_RG,UNI,NT,FULL_NAME_RO,FULL_NAME_RG,LC
+zho_Hani2Latn_WDG_1979,475320,D,"Qiantangjiang Zhan","Qiantangjiang Zhan",12277331,DS,"钱塘江站","钱塘江站",zho
+zho_Hani2Latn_WDG_1979,14673196,V,"Tung-men Chiao","Tung-men Chiao",14633249,VS,"东门礁","东门礁",zho
+zho_Hani2Latn_WDG_1979,14673197,V,"Hsi-men Chiao","Hsi-men Chiao",14633249,VS,"东门礁","东门礁",zho
+zho_Hani2Latn_WDG_1979,11929480,V,"Nan-kan Hsiang","Nan-kan Hsiang",17894024,VS,"南竿乡","南竿乡",""
+zho_Hani2Latn_WDG_1979,-3636699,V,"Ma-tsu Lieh-tao","Ma-tsu Lieh-tao",17892706,VS,"马祖列岛","马祖列岛",""
+zho_Hani2Latn_WDG_1979,12210084,NS,"蓮花園","蓮花園",12210085,N,Lianhuayuan,Lianhuayuan,zho
+zho_Hani2Latn_GCH_1979,-5108094,N,Liujianian,Liujianian,14705841,NS,"刘家埝","刘家埝",zho
+zho_Hani2Latn_GCH_1979,-5108110,N,Zhongwei,Zhongwei,14692533,NS,"中圩","中圩",zho
+zho_Hani2Latn_GCH_1979,-5068284,N,Xiafuxing,Xiafuxing,11136780,NS,"下复兴","下复兴",zho
+zho_Hani2Latn_GCH_1979,-5068278,N,Henggeng,Henggeng,11138674,NS,"横埂","横埂",zho
+...
+----
+
+== Credits
+
+Copyright Ribose.
