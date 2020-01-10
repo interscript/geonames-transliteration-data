@@ -18,15 +18,15 @@ data/Countries.txt: data/geonames.zip | data
 db:
 	mkdir -p $@
 
-db/geonames.db: data/Countries.txt | data
+db/geonames.db: data/Countries.txt | db
 	sqlite3 $@ ".mode tabs" ".import $< countries"
 
-data/geonames_pairs.csv: db/geonames.db | db
+data/geonames_pairs.csv: db/geonames.db | data
 	TMPFILE=`mktemp` && \
 	FILENAME=$@ envsubst < sql/geonames_pairs.sql.in > $$TMPFILE; \
 	sqlite3 $< < $$TMPFILE
 
-db/geonames_pairs.db: data/geonames_pairs.csv | data
+db/geonames_pairs.db: data/geonames_pairs.csv | db
 	sqlite3 $@ ".mode csv" ".import $< countries"
 
 sql/sequence_system_all.sql:
