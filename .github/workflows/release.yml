@@ -1,0 +1,41 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install sqlite3 curl make
+      - name: Fetch GeoNames data set
+        run: |
+          make data/geonames.zip
+      - name: Import into geonames.db
+        run: |
+          make db/geonames.db
+      - name: Generate transliteration pairs DB
+        run: |
+          make db/geonames_pairs.db
+      - name: Generate transliteration pairs to CSV
+        run: |
+          make all
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Automatic release of ${{ github.ref }}
+          draft: false
+          prerelease: false
