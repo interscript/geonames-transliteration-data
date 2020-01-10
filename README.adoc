@@ -31,8 +31,8 @@ Internally it will run this:
 
 [source,bash]
 ----
-$ curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_20200106.zip -o geonames_20200106.zip
-$ unzip geonames_20200106.zip
+$ curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_20200106.zip -o geonames.zip
+$ unzip geonames.zip -d data
 $ sqlite
 sqlite> .mode tabs
 sqlite> .import geonames_20200106/Countries.txt countries

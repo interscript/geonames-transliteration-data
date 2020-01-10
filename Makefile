@@ -4,41 +4,47 @@ GEONAMES_VERSION := 20200106
 
 all: pairs/amh_Ethi2Latn_ALA_1997.csv
 
-geonames.zip:
-	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_${GEONAMES_VERSION}.zip -o geonames.zip
+data:
+	mkdir -p $@
 
-geonames_${GEONAMES_VERSION}: geonames.zip
-	unzip geonames.zip
+data/geonames.zip: | data
+	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_${GEONAMES_VERSION}.zip -o $@
 
-geonames.db: geonames_${GEONAMES_VERSION}
-	sqlite3 ".mode tabs" ".import geonames_${GEONAMES_VERSION}/Countries.txt countries" ".backup geonames.db"
+data/Countries.txt: data/geonames.zip | data
+	unzip $< -d data
 
-geonames_pairs.csv: geonames.db
-	sqlite3 geonames.db < geonames_pairs.sql
+db:
+	mkdir -p $@
 
-geonames_pairs.db: geonames_pairs.csv
-	sqlite3 ".mode csv" ".import geonames_pairs.csv countries" ".backup geonames_pairs.db"
+db/geonames.db: data/Countries.txt | data
+	sqlite3 ".mode tabs" ".import $< countries" ".backup $@"
 
-sequence_system_all.sql:
-	echo > sequence_system_all.sql; \
-	for system in `cat translit_systems.txt`; do \
+data/geonames_pairs.csv: db/geonames.db | db
+	sqlite3 $< < sql/geonames_pairs.sql
+
+db/geonames_pairs.db: data/geonames_pairs.csv | data
+	sqlite3 ".mode csv" ".import $< countries" ".backup $@"
+
+sql/sequence_system_all.sql:
+	echo > $@; \
+	for system in `cat data/translit_systems.txt`; do \
 		export TRANSLIT_SYSTEM=$$system; \
-		envsubst < sequence_system_each.sql.in >> sequence_system_all.sql; \
+		envsubst < sql/sequence_system_each.sql.in >> $@; \
 	done
 
 pairs:
 	mkdir -p $@
 
-pairs/%.csv: geonames_pairs.db sequence_system_all.sql | pairs
-	sqlite3 geonames_pairs.db < sequence_system_all.sql
+pairs/%.csv: db/geonames_pairs.db sql/sequence_system_all.sql | pairs
+	sqlite3 $< < sql/sequence_system_all.sql
+
+distclean: clean
+	rm -rf data
 
 clean:
-	rm -rf geonames_${GEONAMES_VERSION}
-
-distclean:
-	rm -f geonames.zip geonames.db geonames_pairs.csv geonames_pairs.db sequence_system_all.sql
+	rm -f db/ sql/sequence_system_all.sql
 	rm -rf pairs
 
-.PHONY: all clean
+.PHONY: all clean distclean
 
-.SECONDARY: geonames.zip geonames.db geonames_pairs.db
+.SECONDARY: data/geonames.zip geonames.db geonames_pairs.db
