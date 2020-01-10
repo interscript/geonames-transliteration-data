@@ -4,4 +4,4 @@ geonames_*.zip
 geonames.db
 geonames_pairs.csv
 geonames_pairs.db
-
+sql/sequence_system_all.sql

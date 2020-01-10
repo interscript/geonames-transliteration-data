@@ -10,20 +10,24 @@ data:
 data/geonames.zip: | data
 	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_${GEONAMES_VERSION}.zip -o $@
 
+# Touch it once so make considers data/Countries.txt newer than data/geonames.zip.
 data/Countries.txt: data/geonames.zip | data
 	unzip $< -d data
+	touch $@
 
 db:
 	mkdir -p $@
 
 db/geonames.db: data/Countries.txt | data
-	sqlite3 ".mode tabs" ".import $< countries" ".backup $@"
+	sqlite3 $@ ".mode tabs" ".import $< countries"
 
 data/geonames_pairs.csv: db/geonames.db | db
-	sqlite3 $< < sql/geonames_pairs.sql
+	TMPFILE=`mktemp` && \
+	FILENAME=$@ envsubst < sql/geonames_pairs.sql.in > $$TMPFILE; \
+	sqlite3 $< < $$TMPFILE
 
 db/geonames_pairs.db: data/geonames_pairs.csv | data
-	sqlite3 ".mode csv" ".import $< countries" ".backup $@"
+	sqlite3 $@ ".mode csv" ".import $< countries"
 
 sql/sequence_system_all.sql:
 	echo > $@; \
@@ -42,9 +46,9 @@ distclean: clean
 	rm -rf data
 
 clean:
-	rm -f db/ sql/sequence_system_all.sql
-	rm -rf pairs
+	rm -f sql/sequence_system_all.sql
+	rm -rf db pairs
 
 .PHONY: all clean distclean
 
-.SECONDARY: data/geonames.zip geonames.db geonames_pairs.db
+.SECONDARY: data/geonames.zip db/geonames.db db/geonames_pairs.db
