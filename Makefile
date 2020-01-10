@@ -1,12 +1,17 @@
 #!make
 SHELL := /bin/bash
+GEONAMES_VERSION := 20200106
 
 all: pairs/amh_Ethi2Latn_ALA_1997.csv
 
-geonames.db: geonames_20200106.zip
-	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_20200106.zip -o geonames_20200106.zip
-	unzip geonames_20200106.zip
-	sqlite3 ".mode tabs" ".import geonames_20200106/Countries.txt countries" ".backup geonames.db"
+geonames.zip:
+	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_${GEONAMES_VERSION}.zip -o geonames.zip
+
+geonames_${GEONAMES_VERSION}: geonames.zip
+	unzip geonames.zip
+
+geonames.db: geonames_${GEONAMES_VERSION}
+	sqlite3 ".mode tabs" ".import geonames_${GEONAMES_VERSION}/Countries.txt countries" ".backup geonames.db"
 
 geonames_pairs.csv: geonames.db
 	sqlite3 geonames.db < geonames_pairs.sql
@@ -27,4 +32,13 @@ pairs:
 pairs/%.csv: geonames_pairs.db sequence_system_all.sql | pairs
 	sqlite3 geonames_pairs.db < sequence_system_all.sql
 
-.PHONY: watch-$(FORMAT)
+clean:
+	rm -rf geonames_${GEONAMES_VERSION}
+
+distclean:
+	rm -f geonames.zip geonames.db geonames_pairs.csv geonames_pairs.db sequence_system_all.sql
+	rm -rf pairs
+
+.PHONY: all clean
+
+.SECONDARY: geonames.zip geonames.db geonames_pairs.db

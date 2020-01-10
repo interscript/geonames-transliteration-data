@@ -1,5 +1,7 @@
 = GeoNames data for transliteration testing
 
+image:https://github.com/riboseinc/geonames-transliteration-data/workflows/build/badge.svg["Build Status", link="https://github.com/riboseinc/geonames-transliteration-data/actions?workflow=build"]
+
 == Purpose
 
 Extract transliteration pairs (entries that are coded with transliteration systems) for testing of those transliteration sstems.

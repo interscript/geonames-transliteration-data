@@ -1,0 +1,31 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Test generation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install sqlite3 curl make
+      - name: Fetch GeoNames data set
+        run: |
+          make geonames.zip
+      - name: Import into geonames.db
+        run: |
+          make geonames.db
+      - name: Generate transliteration pairs DB
+        run: |
+          make geonames_pairs.db
+      - name: Generate transliteration pairs to CSV
+        run: |
+          make all
+
