@@ -18,13 +18,13 @@ jobs:
           sudo apt-get -y install sqlite3 curl make
       - name: Fetch GeoNames data set
         run: |
-          make geonames.zip
+          make data/geonames.zip
       - name: Import into geonames.db
         run: |
-          make geonames.db
+          make db/geonames.db
       - name: Generate transliteration pairs DB
         run: |
-          make geonames_pairs.db
+          make db/geonames_pairs.db
       - name: Generate transliteration pairs to CSV
         run: |
           make all
