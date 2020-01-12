@@ -18,8 +18,14 @@ data/Countries.txt: data/geonames.zip | data
 db:
 	mkdir -p $@
 
-db/geonames.db: data/Countries.txt | db
-	sqlite3 $@ ".mode tabs" ".import $< countries"
+# The GeoNames database contains text fields with single double quotes,
+# they need to be escaped prior to import.
+# https://stackoverflow.com/questions/15212489/sqlite3-import-with-quotes
+data/Countries.quoted.txt: data/Countries.txt
+	sed $$'s/"/""/g;s/[^\t]*/"&"/g' $< > $@
+
+db/geonames.db: data/Countries.quoted.txt | db
+	sqlite3 $@ '.mode csv' '.separator "\t"' ".import $< countries"
 
 data/geonames_pairs.csv: db/geonames.db | data
 	TMPFILE=`mktemp` && \
@@ -46,7 +52,7 @@ distclean: clean
 	rm -rf data
 
 clean:
-	rm -f sql/sequence_system_all.sql
+	rm -f data/Countries.quoted.txt sql/sequence_system_all.sql data/geonames_pairs.csv
 	rm -rf db pairs
 
 .PHONY: all clean distclean
