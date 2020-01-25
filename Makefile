@@ -7,6 +7,9 @@ all: pairs/amh_Ethi2Latn_ALA_1997.csv
 data:
 	mkdir -p $@
 
+data/translit_systems.txt: db/geonames.db | data
+	sqlite3 $< < sql/translit_systems.sql > $@
+
 data/geonames.zip: | data
 	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_${GEONAMES_VERSION}.zip -o $@
 
@@ -35,7 +38,7 @@ data/geonames_pairs.csv: db/geonames.db | data
 db/geonames_pairs.db: data/geonames_pairs.csv | db
 	sqlite3 $@ ".mode csv" ".import $< countries"
 
-sql/sequence_system_all.sql:
+sql/sequence_system_all.sql: data/translit_systems.txt
 	echo > $@; \
 	for system in `cat data/translit_systems.txt`; do \
 		export TRANSLIT_SYSTEM=$$system; \
