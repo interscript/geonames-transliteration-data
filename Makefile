@@ -1,6 +1,6 @@
 #!make
 SHELL := /bin/bash
-GEONAMES_VERSION := 20200106
+GEONAMES_VERSION := 20200120
 
 all: pairs/amh_Ethi2Latn_ALA_1997.csv
 
