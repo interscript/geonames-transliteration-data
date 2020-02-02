@@ -17,7 +17,7 @@ data/VERSION: | data
 
 data/geonames.zip: data/VERSION
 	export VERSION=`cat data/VERSION`; \
-	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip -o $@
+	curl -sSL http://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip -o $@
 
 # Touch it once so make considers data/Countries.txt newer than data/geonames.zip.
 data/Countries.txt: data/geonames.zip | data
