@@ -27,6 +27,9 @@ jobs:
       - name: Generate transliteration pairs to CSV
         run: |
           make all
+      - name: Create pairs.zip
+        run: |
+          make pairs.zip
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -39,3 +42,13 @@ jobs:
             Automatic release of ${{ github.ref }}
           draft: false
           prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./pairs.zip
+          asset_name: pairs.zip
+          asset_content_type: application/zip

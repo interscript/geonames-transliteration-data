@@ -54,8 +54,14 @@ sql/sequence_system_all.sql: data/translit_systems.txt
 pairs:
 	mkdir -p $@
 
+pairs/GNDB_VERSION: data/VERSION | pairs
+	cp -f $< $@
+
 pairs/%.csv: db/geonames_pairs.db sql/sequence_system_all.sql | pairs
 	sqlite3 $< < sql/sequence_system_all.sql
+
+pairs.zip: pairs/GNDB_VERSION pairs/amh_Ethi2Latn_ALA_1997.csv
+	zip -j $@ pairs/*
 
 distclean: clean
 	rm -rf data
