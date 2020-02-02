@@ -1,8 +1,9 @@
 #!make
 SHELL := /bin/bash
-GEONAMES_VERSION := 20200127
+GNDB_PAGE := http://geonames.nga.mil/gns/html/namefiles.html
+GNDB_FILE_PATTERN := cntyfile/geonames_\d*.zip
 
-all: pairs/amh_Ethi2Latn_ALA_1997.csv
+all: pairs/VERSION pairs/amh_Ethi2Latn_ALA_1997.csv
 
 data:
 	mkdir -p $@
@@ -10,8 +11,13 @@ data:
 data/translit_systems.txt: db/geonames.db | data
 	sqlite3 $< < sql/translit_systems.sql > $@
 
-data/geonames.zip: | data
-	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_${GEONAMES_VERSION}.zip -o $@
+data/VERSION: | data
+	export GNDB_VERSION=`curl -sSL ${GNDB_PAGE} | grep -o '${GNDB_FILE_PATTERN}' | cut -d '_' -f 2 | cut -d '.' -f 1`; \
+	echo $$GNDB_VERSION > $@
+
+data/geonames.zip: data/VERSION
+	export VERSION=`cat data/VERSION`; \
+	curl -sL http://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip -o $@
 
 # Touch it once so make considers data/Countries.txt newer than data/geonames.zip.
 data/Countries.txt: data/geonames.zip | data
