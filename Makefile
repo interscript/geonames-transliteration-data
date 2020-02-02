@@ -12,7 +12,7 @@ data/translit_systems.txt: db/geonames.db | data
 	sqlite3 $< < sql/translit_systems.sql > $@
 
 data/VERSION: | data
-	export GNDB_VERSION=`curl -sSL ${GNDB_PAGE} | grep -o '${GNDB_FILE_PATTERN}' | cut -d '_' -f 2 | cut -d '.' -f 1`; \
+	export GNDB_VERSION=`curl -sSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
 	echo $$GNDB_VERSION > $@
 
 data/geonames.zip: data/VERSION
