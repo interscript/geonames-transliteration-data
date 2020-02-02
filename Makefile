@@ -3,7 +3,7 @@ SHELL := /bin/bash
 GNDB_PAGE := http://geonames.nga.mil/gns/html/namefiles.html
 GNDB_FILE_PATTERN := cntyfile/geonames_\d*.zip
 
-all: pairs/VERSION pairs/amh_Ethi2Latn_ALA_1997.csv
+all: pairs/GNDB_VERSION pairs/amh_Ethi2Latn_ALA_1997.csv
 
 data:
 	mkdir -p $@
