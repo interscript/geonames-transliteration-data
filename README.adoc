@@ -4,7 +4,7 @@ image:https://github.com/riboseinc/geonames-transliteration-data/workflows/build
 
 == Purpose
 
-Extract transliteration pairs (entries that are coded with transliteration systems) for testing of those transliteration sstems.
+Extract transliteration pairs (entries that are coded with transliteration systems) for testing of those transliteration systems.
 
 == Usage
 
