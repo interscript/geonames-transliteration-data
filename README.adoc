@@ -79,6 +79,29 @@ ara_Arab2Latn_BUC_2002,14363956,N,"Būghāz Raqm Ithnān","Raqm Ithnān, Būghā
 ----
 
 
+== Column description
+
+In the `*_NT` columns, rows with values `DS`, `NS`, `VS` are always the name source, the rest are generated.
+
+The meaning of `*_NT` values are described here:
+http://geonames.nga.mil/gns/html/rest/lookuptables.html#Name%20Type%20Codes
+
+|===
+| NT_CD | DESCRIPTION | DEFINITION
+
+| C | Conventional | A commonly used English-language name approved by the U.S. Board on Geographic Names (BGN) for use in addition to, or in lieu of, a BGN-approved local official name or names, e.g., Rome, Alps, Danube River.
+| D | Unverified | A name from a source whose official status can not be verified by the BGN.
+| DS | Unverified Non-Roman Script | The non-Roman script form of a name from a source whose official status can not be verified by the BGN.
+| N | Approved | The BGN-approved local official name for a geographic feature. Except for countries with more than one official language; there is normally only one such name for a feature wholly within a country.
+| NS | Non-Roman Script | The non-Roman script form of the BGN-approved local official name for a geographic feature. Except for countries with more than one official language; there is normally only one such name for a feature wholly within a country.
+| P | Provisional | A geographic name of an area for which the territorial status is not finally determined or not recognized by the United States.
+| V | Variant | A former name, name in local usage, or other spelling found on various sources.
+| VA | Anglicized Variant | An English-language name that is derived by modifying the local official name to render it more accessible or meaningful to an English-language user.
+| VS | Variant Non-Roman Script | The non-Roman script form of a former name, name in local usage, or other spelling found on various sources.
+
+|===
+
+
 == Credits
 
 Copyright Ribose.
