@@ -81,6 +81,28 @@ ara_Arab2Latn_BUC_2002,14363956,N,"Būghāz Raqm Ithnān","Raqm Ithnān, Būghā
 
 == Column description
 
+=== TRANSL_CD
+
+The transliteration system used to generate the DEST_* name.
+
+=== LC
+
+Language code.
+
+=== {SRC, DEST}_UNI
+
+ID of the source/destination name.
+
+=== {SRC, DEST}_NT
+
+Type of source/destination name.
+
+=== SRC_FULL_NAME_{RO,RG}
+
+Source name. RO => full name. RG => name with grouped feature, e.g. "Lake Nemo" in RO will be formatted as "Nemo, Lake" in RG.
+
+=== NT column values
+
 In the `*_NT` columns, rows with values `DS`, `NS`, `VS` are always the name source, the rest are generated.
 
 The meaning of `*_NT` values are described here:
