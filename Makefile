@@ -1,6 +1,6 @@
 #!make
 SHELL := /bin/bash
-GNDB_PAGE := http://geonames.nga.mil/gns/html/namefiles.html
+GNDB_PAGE := https://geonames.nga.mil/gns/html/namefiles.html
 GNDB_FILE_PATTERN := cntyfile/geonames_\d*.zip
 
 all: pairs/GNDB_VERSION pairs/amh_Ethi2Latn_ALA_1997.csv
@@ -19,7 +19,9 @@ data/VERSION: | data
 # Using curl -k option since geonames.nga.mil is using an untrusted cert
 data/geonames.zip: data/VERSION
 	export VERSION=`cat data/VERSION`; \
-	curl -ksSL http://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip -o $@
+	curl -ksSL \
+		https://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip \
+		-o $@
 
 # Touch it once so make considers data/Countries.txt newer than data/geonames.zip.
 data/Countries.txt: data/geonames.zip | data
