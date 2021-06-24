@@ -1,0 +1,36 @@
+name: check_update
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  check_update:
+    name: Check updates from source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.INTERSCRIPT_CI_PAT }}
+
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install sqlite3 curl make
+
+      - name: Fetch GeoNames last version
+        run: |
+          make data/VERSION
+          echo "GNS_VERSION=v$(cat data/VERSION)" >> $GITHUB_ENV
+
+      - uses: mukunku/tag-exists-action@v1.0.0
+        id: checkTag
+        with:
+          tag: ${{ env.GNS_VERSION }}
+
+      - if: ${{ !steps.checkTag.outputs.exists }}
+        run: |
+          git config user.name "interscript-ci"
+          git config user.email "interscript-ci@users.noreply.github.com"
+          git tag ${{ env.GNS_VERSION }}
+          git push origin master --tags
