@@ -11,15 +11,13 @@ data:
 data/translit_systems.txt: db/geonames.db | data
 	sqlite3 $< < sql/translit_systems.sql > $@
 
-# Using curl -k option since geonames.nga.mil is using an untrusted cert
 data/VERSION: | data
-	export GNDB_VERSION=`curl -ksSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
+	export GNDB_VERSION=`curl -sSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
 	echo $$GNDB_VERSION > $@
 
-# Using curl -k option since geonames.nga.mil is using an untrusted cert
 data/geonames.zip: data/VERSION
 	export VERSION=`cat data/VERSION`; \
-	curl -ksSL \
+	curl -sSL \
 		https://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip \
 		-o $@
 
