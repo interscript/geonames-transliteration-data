@@ -38,4 +38,4 @@ jobs:
           git config user.name "interscript-ci"
           git config user.email "interscript-ci@users.noreply.github.com"
           git tag ${{ env.GNS_VERSION }}
-          git push origin master --tags
+          git push origin main --tags
