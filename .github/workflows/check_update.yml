@@ -30,6 +30,8 @@ jobs:
           tag: ${{ env.GNS_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - run: echo ${{ steps.checkTag.outputs.exists }}
 
       - if: steps.checkTag.outputs.exists == 'false'
         run: |
