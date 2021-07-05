@@ -37,6 +37,9 @@ make checkdate
 CHECKDATE_TIMES=10 make checkdate
 ----
 
+All dates displayed should be identical. If interleaving entries are shown,
+there is an issue with endpoint consistency.
+
 
 === Create the GeoNames database for filtering
 
