@@ -15,6 +15,14 @@ data/VERSION: | data
 	export GNDB_VERSION=`curl -sSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
 	echo $$GNDB_VERSION > $@
 
+CHECKDATE_TIMES ?= 1
+# Used to check release date of the latest GNDB package
+checkdate:
+	for ((i=1; i<=$(CHECKDATE_TIMES); i++)); do \
+		echo `curl -sSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
+	done
+
+
 data/geonames.zip: data/VERSION
 	export VERSION=`cat data/VERSION`; \
 	curl -sSL \
@@ -72,6 +80,6 @@ clean:
 	rm -f data/Countries.quoted.txt sql/sequence_system_all.sql data/geonames_pairs.csv
 	rm -rf db pairs
 
-.PHONY: all clean distclean
+.PHONY: all clean distclean checkdate
 
 .SECONDARY: data/geonames.zip db/geonames.db db/geonames_pairs.db

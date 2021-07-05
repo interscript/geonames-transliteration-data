@@ -1,12 +1,13 @@
 = GeoNames data for transliteration testing
 
-image:https://github.com/riboseinc/geonames-transliteration-data/workflows/build/badge.svg["Build Status", link="https://github.com/riboseinc/geonames-transliteration-data/actions?workflow=build"]
+image:https://github.com/interscript/geonames-transliteration-data/workflows/build/badge.svg["Build Status", link="https://github.com/interscript/geonames-transliteration-data/actions?workflow=build"]
 
 == Purpose
 
-Extract transliteration pairs (entries that are coded with transliteration systems) for testing of those transliteration systems.
+Extract transliteration pairs (entries that are coded with transliteration
+systems) for testing of those transliteration systems.
 
-LAST UPDATED: 20200916
+LAST UPDATED: See https://github.com/interscript/geonames-transliteration-data/releases[releases] page.
 
 == Usage
 
@@ -18,6 +19,23 @@ make all
 ----
 
 Achieves all the steps below.
+
+
+=== Check latest release date of GNDB
+
+Due to recent instabilities of pages that serve GNDB releases, the `make
+checkdate` target is created in order to fetch the latest release date (once or
+multiple times) to ensure that a consistent version is served across all GNDB
+load balancers.
+
+[source,bash]
+----
+# Check once
+make checkdate
+
+# Check 10 times
+CHECKDATE_TIMES=10 make checkdate
+----
 
 
 === Create the GeoNames database for filtering
