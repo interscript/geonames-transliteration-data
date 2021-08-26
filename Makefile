@@ -12,20 +12,20 @@ data/translit_systems.txt: db/geonames.db | data
 	sqlite3 $< < sql/translit_systems.sql > $@
 
 data/VERSION: | data
-	export GNDB_VERSION=`curl -sSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
+	export GNDB_VERSION=`curl -fsSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
 	echo $$GNDB_VERSION > $@
 
 CHECKDATE_TIMES ?= 1
 # Used to check release date of the latest GNDB package
 checkdate:
 	for ((i=1; i<=$(CHECKDATE_TIMES); i++)); do \
-		echo `curl -sSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
+		echo `curl -fsSL ${GNDB_PAGE} | sed -n 's/.*geonames_\([0-9]*\)\.zip.*/\1/p'`; \
 	done
 
 
 data/geonames.zip: data/VERSION
 	export VERSION=`cat data/VERSION`; \
-	curl -sSL \
+	curl -fsSL \
 		https://geonames.nga.mil/gns/html/cntyfile/geonames_$$VERSION.zip \
 		-o $@
 
