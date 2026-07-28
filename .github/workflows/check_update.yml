@@ -10,7 +10,7 @@ jobs:
     name: Check updates from source
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.INTERSCRIPT_CI_PAT }}
 
@@ -24,13 +24,13 @@ jobs:
           make data/VERSION
           echo "GNS_VERSION=v$(cat data/VERSION)" >> $GITHUB_ENV
 
-      - uses: mukunku/tag-exists-action@v1.0.0
+      - uses: mukunku/tag-exists-action@v1.7.0
         id: checkTag
         with:
           tag: ${{ env.GNS_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - run: echo ${{ steps.checkTag.outputs.exists }}
 
       - if: steps.checkTag.outputs.exists == 'false'

@@ -10,7 +10,7 @@ jobs:
     name: Test generation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
       - name: Install prerequisites
         run: |
           sudo apt-get update
@@ -27,4 +27,3 @@ jobs:
       - name: Generate transliteration pairs to CSV
         run: |
           make all
-
